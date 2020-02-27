@@ -1,17 +1,17 @@
 {
   "development": {
-    "username": "postgres",
-    "password": " ",
+    "username": "root",
+    "password": null,
     "database": "db_unit_testing_express",
     "host": "127.0.0.1",
-    "dialect": "postgres"
+    "dialect": "mysql"
   },
   "test": {
-    "username": "postgres",
+    "username": "mysql",
     "password": null,
-    "database": "database_test",
+    "database": "db_unit_testing_express_test",
     "host": "127.0.0.1",
-    "dialect": "postgres"
+    "dialect": "mysql"
   },
   "production": {
     "username": "postgres",
