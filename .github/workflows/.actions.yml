@@ -3,11 +3,7 @@ on: [push, pull_request]
 jobs: 
   build:
     name: Express.js (Node.js ${{ matrix.node-version }} on ${{ matrix.operating-system }})
-    runs-on: ${{ matrix.operating-system }}
-    env:
-      DB_DATABASE: db_unit_testing_express
-      DB_USERNAME: root
-      DB_PASSWORD: secret      
+    runs-on: ${{ matrix.operating-system }}    
     services:
       mysql:
         image: mysql:5.7
