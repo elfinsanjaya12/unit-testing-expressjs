@@ -1,13 +1,9 @@
-name: Github CI Node.js MySQL
+name: Github CI Node.js PostgreSQL
 on: [push, pull_request]
 jobs: 
-  container-job:
+  build:
     name: Express.js (Node.js ${{ matrix.node-version }} on ${{ matrix.operating-system }})
-    runs-on: ${{ matrix.operating-system }}
-    # runs all of the steps inside the specified container rather than on the VM host.  
-    # Because of this the network configuration changes from host based network to a container network.
-    container:
-      image:  node:10.16-jessie
+    runs-on: ${{ matrix.operating-system }}    
     services:
       postgres:
         image: postgres:10.8
@@ -16,8 +12,7 @@ jobs:
           POSTGRES_PASSWORD: postgres
           POSTGRES_DB: postgres
         ports:
-        - 5432:5432
-        # needed because the postgres container does not provide a healthcheck
+          - 5432:5432        
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
     strategy:
       matrix:
@@ -31,19 +26,14 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
       - name: Install dependencies
-        run: npm install
-      - run: npm run build --if-present
+        run: npm install      
       - name: Run Migration
         run: npm run tb:start
-        env:
-          # use postgres for the host here because we have specified a container for the job.
-          # If we were running the job on the VM this would be localhost
+        env:          
           POSTGRES_HOST: postgres
           POSTGRES_PORT: ${{ job.services.postgres.ports[5432] }}
       - name: Run Test
         run: npm run test
-        env:
-          # use postgres for the host here because we have specified a container for the job.
-          # If we were running the job on the VM this would be localhost
+        env:          
           POSTGRES_HOST: postgres
           POSTGRES_PORT: ${{ job.services.postgres.ports[5432] }}
