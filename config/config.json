@@ -1,17 +1,24 @@
 {
   "development": {
+    "username": "root",
+    "password": null,
+    "database": "db_unit_testing_express",
+    "host": "127.0.0.1",
+    "dialect": "mysql"
+  },
+  "test": {
+    "username": "root",
+    "password": null,
+    "database": "db_unit_testing_express_test",
+    "host": "127.0.0.1",
+    "dialect": "mysql"
+  },
+  "test-github": {
     "username": "postgres",
     "password": "postgres",
     "database": "postgres",
     "host": "postgres",
     "dialect": "postgres"
-  },
-  "test": {
-    "username": "mysql",
-    "password": null,
-    "database": "db_unit_testing_express_test",
-    "host": "127.0.0.1",
-    "dialect": "mysql"
   },
   "production": {
     "username": "postgres",
