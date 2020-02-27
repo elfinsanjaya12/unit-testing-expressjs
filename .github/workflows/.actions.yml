@@ -33,18 +33,8 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - name: Install dependencies
         run: npm install
-      - run: npm run build --if-present
-      - name: Run Migration
-        run: npm tb:start
-        env:
-          # use postgres for the host here because we have specified a container for the job.
-          # If we were running the job on the VM this would be localhost
-          POSTGRES_HOST: postgres
-          POSTGRES_PORT: ${{ job.services.postgres.ports[5432] }}
+      - run: npm run build --if-present      
       - name: Run Test with Mocha Chai & istanbul
-        run: npm test
+        run: npm run test
         env:
-          # use postgres for the host here because we have specified a container for the job.
-          # If we were running the job on the VM this would be localhost
-          POSTGRES_HOST: postgres
-          POSTGRES_PORT: ${{ job.services.postgres.ports[5432] }}
+          CI: true
