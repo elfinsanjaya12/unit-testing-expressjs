@@ -30,11 +30,14 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
-        - run: npm install
-        - run: npm run build --if-present        
-        - run: npm run tb:start
-          env:
-            DB_PORT: ${{ job.services.mysql.ports['3306'] }}
-        - run: npm run test
-          env:
-            DB_PORT: ${{ job.services.mysql.ports['3306'] }}
+    - name: Install dependencies
+      run: npm install
+    - run: npm run build --if-present
+    - name: Run Migration
+      run: npm run tb:start
+      env:
+        DB_PORT: ${{ job.services.mysql.ports['3306'] }}
+    - name: Run Test with Mocha Chai & istanbul
+      run: npm run test
+      env:
+        DB_PORT: ${{ job.services.mysql.ports['3306'] }}
