@@ -1,8 +1,7 @@
 name: Github CI Node.js PostgreSQL
 on: [push, pull_request]
 jobs: 
-  build:
-    name: Express.js (Node.js ${{ matrix.node-version }} on ${{ matrix.operating-system }})
+  build:    
     runs-on: ${{ matrix.operating-system }}    
     services:
       postgres:
@@ -12,7 +11,7 @@ jobs:
           POSTGRES_PASSWORD: postgres
           POSTGRES_DB: postgres
         ports:
-          - 5432:5432        
+        - 5432:5432
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
     strategy:
       matrix:
