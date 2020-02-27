@@ -1,4 +1,4 @@
-name: Github CI Node.js MySQL
+name: Github ci Express.js MySQL
 on: [push, pull_request]
 jobs: 
   build:
@@ -7,17 +7,17 @@ jobs:
     env:
       DB_DATABASE: db_unit_testing_express
       DB_USERNAME: root
-      DB_PASSWORD: password      
+      DB_PASSWORD: null      
     services:
       mysql:
         image: mysql:5.7
         env:
-          MYSQL_ALLOW_EMPTY_PASSWORD: false
+          MYSQL_ALLOW_EMPTY_PASSWORD: true
           MYSQL_ROOT_PASSWORD: password
           MYSQL_DATABASE: db_unit_testing_express
         ports:
-          - 3306/3306
-        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+          - 3306/tcp
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3  
     strategy:
       matrix:
         operating-system: [ubuntu-latest]
@@ -36,7 +36,7 @@ jobs:
         run: npm run tb:start
         env:
           DB_PORT: ${{ job.services.mysql.ports['3306'] }}
-      - name: Run Test with Mocha Chai & istanbul
+      - name: Run Test
         run: npm run test
         env:
           DB_PORT: ${{ job.services.mysql.ports['3306'] }}
