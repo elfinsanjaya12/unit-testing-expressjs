@@ -1,4 +1,4 @@
-name: Github ci / cd Express.js MySQL
+name: Github ci / cd Express.js PostgreSQL
 on: [push, pull_request]
 jobs: 
   build:
@@ -6,18 +6,19 @@ jobs:
     runs-on: ${{ matrix.operating-system }}
     env:
       DB_DATABASE: db_unit_testing_express
-      DB_USERNAME: root
-      DB_PASSWORD: password      
+      DB_USERNAME: postgres
+      DB_PASSWORD: postgres      
     services:
-      mysql:
-        image: mysql:5.7
+      postgres:
+        image: postgres:10.8
         env:
-          MYSQL_ALLOW_EMPTY_PASSWORD: false
-          MYSQL_ROOT_PASSWORD: password
-          MYSQL_DATABASE: db_unit_testing_express
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: db_unit_testing_express
         ports:
-          - 3306/tcp
-        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3  
+          - 5432:5432
+        # needed because the postgres container does not provide a healthcheck
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
     strategy:
       matrix:
         operating-system: [ubuntu-latest]
@@ -36,8 +37,14 @@ jobs:
       - name: Run Migration
         run: npm run tb:start
         env:
-          DB_PORT: ${{ job.services.mysql.ports['3306'] }}
+          # use postgres for the host here because we have specified a container for the job.
+          # If we were running the job on the VM this would be localhost
+          POSTGRES_HOST: postgres
+          POSTGRES_PORT: ${{ job.services.postgres.ports[5432] }}
       - name: Run Test with Mocha Chai & istanbul
         run: npm run test
         env:
-          DB_PORT: ${{ job.services.mysql.ports['3306'] }}
+          # use postgres for the host here because we have specified a container for the job.
+          # If we were running the job on the VM this would be localhost
+          POSTGRES_HOST: postgres
+          POSTGRES_PORT: ${{ job.services.postgres.ports[5432] }}
