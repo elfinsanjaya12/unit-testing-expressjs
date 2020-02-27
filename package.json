@@ -4,20 +4,35 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon app.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node app.js",
+    "dev": "nodemon app.js",
+    "test": "nyc ./node_modules/.bin/_mocha --exit",
+    "test:watch": "nyc ./node_modules/.bin/nodemon --exec ./node_modules/.bin/_mocha",    
+    "dev:debug": "./node_modules/.bin/nodemon --inspect ./bin/www",
+    "db:reset": "./node_modules/.bin/sequelize db:drop && ./node_modules/.bin/sequelize db:create && ./node_modules/.bin/sequelize db:migrate",
+    "tb:reset": "./node_modules/.bin/sequelize db:migrate:undo:all && ./node_modules/.bin/sequelize db:migrate",
+    "db:start": "./node_modules/.bin/sequelize db:create && ./node_modules/.bin/sequelize db:migrate",
+    "tb:start": "./node_modules/.bin/sequelize db:migrate"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "bcryptjs": "^2.4.3",
+    "bcryptjs": "^2.4.3",    
     "express": "^4.17.1",
     "express-validator": "^6.4.0",
-    "jsonwebtoken": "^8.5.1",
+    "jsonwebtoken": "^8.5.1",    
+    "mysql2": "^2.1.0",    
     "pg": "^7.18.2",
     "pg-hstore": "^2.3.3",
     "sequelize": "^5.21.5",
     "sequelize-cli": "^5.5.1"
+  },
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "mocha": "^7.0.1",
+    "nodemon": "^1.19.1",
+    "nyc": "^15.0.0",
+    "supertest": "^4.0.2"
   }
 }
