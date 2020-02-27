@@ -29,7 +29,7 @@ jobs:
         run: npm install
       - run: npm run build --if-present
       - name: Run Migration
-        run: npm run tb:start
+        run: npm run db:start
         env:
           DB_PORT: ${{ job.services.mysql.ports['3306'] }}
       - name: Run Test
