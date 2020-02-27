@@ -7,13 +7,13 @@ jobs:
     env:
       DB_DATABASE: db_unit_testing_express
       DB_USERNAME: root
-      DB_PASSWORD: null      
+      DB_PASSWORD: secret      
     services:
       mysql:
         image: mysql:5.7
         env:
-          MYSQL_ALLOW_EMPTY_PASSWORD: true
-          MYSQL_ROOT_PASSWORD: null
+          MYSQL_ALLOW_EMPTY_PASSWORD: false
+          MYSQL_ROOT_PASSWORD: secret
           MYSQL_DATABASE: db_unit_testing_express
         ports:
           - 3306/tcp
