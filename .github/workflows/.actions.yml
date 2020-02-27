@@ -34,7 +34,7 @@ jobs:
         run: npm install
       - run: npm run build --if-present
       - name: Run Migration
-        run: npm run db:start
+        run: npm run tb:start
         env:
           # use postgres for the host here because we have specified a container for the job.
           # If we were running the job on the VM this would be localhost
