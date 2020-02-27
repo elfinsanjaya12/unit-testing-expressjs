@@ -28,13 +28,13 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - name: Install dependencies
         run: npm install      
-      - name: Run Migration
-        run: npm run tb:start
+      - name: Run migration on mode test-github
+        run: npm run tb:test-github:start
         env:          
           POSTGRES_HOST: postgres
           POSTGRES_PORT: ${{ job.services.postgres.ports[5432] }}
       - name: Run Test
-        run: npm run test
+        run: npm run test-github
         env:          
           POSTGRES_HOST: postgres
           POSTGRES_PORT: ${{ job.services.postgres.ports[5432] }}
