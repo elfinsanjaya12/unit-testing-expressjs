@@ -13,7 +13,7 @@ jobs:
         image: mysql:5.7
         env:
           MYSQL_ALLOW_EMPTY_PASSWORD: true
-          MYSQL_ROOT_PASSWORD: password
+          MYSQL_ROOT_PASSWORD: null
           MYSQL_DATABASE: db_unit_testing_express
         ports:
           - 3306/tcp
