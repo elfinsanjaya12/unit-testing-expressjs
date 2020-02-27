@@ -1,10 +1,10 @@
 {
   "development": {
-    "username": "root",
-    "password": "secret",
-    "database": "db_unit_testing_express",
-    "host": "localhost",
-    "dialect": "mysql"
+    "username": "postgres",
+    "password": "postgres",
+    "database": "postgres",
+    "host": "127.0.0.1",
+    "dialect": "postgres"
   },
   "test": {
     "username": "mysql",

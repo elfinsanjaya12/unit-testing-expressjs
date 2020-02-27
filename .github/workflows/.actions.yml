@@ -1,19 +1,49 @@
 name: Github CI Node.js MySQL
 on: [push, pull_request]
-jobs:
-  build:
-    runs-on: ubuntu-latest
+jobs: 
+  container-job:
+    name: Express.js (Node.js ${{ matrix.node-version }} on ${{ matrix.operating-system }})
+    runs-on: ${{ matrix.operating-system }}
+    # runs all of the steps inside the specified container rather than on the VM host.  
+    # Because of this the network configuration changes from host based network to a container network.
+    container:
+      image:  node:10.16-jessie
+    services:
+      postgres:
+        image: postgres:10.8
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: postgres
+        ports:
+        - 5432:5432
+        # needed because the postgres container does not provide a healthcheck
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
     strategy:
       matrix:
+        operating-system: [ubuntu-latest]
         node-version: [12.x]
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@v2
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
-      - run: npm ci
+      - name: Install dependencies
+        run: npm install
       - run: npm run build --if-present
-      - run: npm test
+      - name: Run Migration
+        run: npm run db:start
         env:
-          CI: true
+          # use postgres for the host here because we have specified a container for the job.
+          # If we were running the job on the VM this would be localhost
+          POSTGRES_HOST: postgres
+          POSTGRES_PORT: ${{ job.services.postgres.ports[5432] }}
+      - name: Run Test
+        run: npm run test
+        env:
+          # use postgres for the host here because we have specified a container for the job.
+          # If we were running the job on the VM this would be localhost
+          POSTGRES_HOST: postgres
+          POSTGRES_PORT: ${{ job.services.postgres.ports[5432] }}
