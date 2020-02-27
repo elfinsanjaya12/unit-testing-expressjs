@@ -1,29 +1,13 @@
-name: Github ci / cd Express.js PostgreSQL
+name: Github CI Node.js
 on: [push, pull_request]
 jobs: 
   build:
     name: Express.js (Node.js ${{ matrix.node-version }} on ${{ matrix.operating-system }})
     runs-on: ${{ matrix.operating-system }}
-    env:
-      DB_DATABASE: db_unit_testing_express
-      DB_USERNAME: postgres
-      DB_PASSWORD: postgres      
-    services:
-      postgres:
-        image: postgres:10.8
-        env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: db_unit_testing_express
-        ports:
-          - 5432:5432
-        # needed because the postgres container does not provide a healthcheck
-        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
     strategy:
       matrix:
         operating-system: [ubuntu-latest]
         node-version: [12.x]
-
     steps:
       - name: Checkout
         uses: actions/checkout@v2
