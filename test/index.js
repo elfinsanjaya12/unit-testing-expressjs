@@ -3,7 +3,7 @@ const request = require('supertest');
 const app = require('../app.js');
 const helpers = require('./helpers');
 
-describe('Server', () => {
+describe('Server Endpoint Test', () => {
   it('GET /', async () => {
     const response = await request(app).get('/');
     expect(response.statusCode).to.equal(200);
@@ -29,8 +29,8 @@ describe('User API Endpoint Tests', () => {
   //   console.log('----afterEach');
   // });
 
-  context('GET /users', () => {
-    it('GET /api/v1/users Guest not have token', async () => {
+  context('GET /api/v1/users', () => {
+    it('fail to get users with status code 401 because not have the token', async () => {
       const response = await request(app)
         .get('/api/v1/users');
   
@@ -39,7 +39,7 @@ describe('User API Endpoint Tests', () => {
       expect(response.body.message).to.equal('Not authenticated');  
     });
     
-    it('GET /api/v1/users Validation token invalid', async () => {
+    it('fail to get users with status code 401 because the token is invalid', async () => {
       const tokenFake = 'dsafsadfsmdfkmaskfmsakjdnfask3453';
       
       await helpers.createUser();
@@ -53,7 +53,7 @@ describe('User API Endpoint Tests', () => {
       expect(response.body.message).to.equal('Token invalid');
     });
   
-    it('GET /api/v1/users Success read all users', async () => {
+    it('Success read all users with status code 200', async () => {
       let user = await helpers.createUser();
       
       const response = await request(app)
@@ -67,8 +67,8 @@ describe('User API Endpoint Tests', () => {
     });
   });
 
-  context('CREATE New User', () => {
-    it('POST /api/v1/users Validation create new user no input data', async () => {
+  context('POST /api/v1/user', () => {
+    it('fail to create a new user without input data (validation) with status code 422', async () => {
       const response = await request(app)
         .post('/api/v1/users')
         .send({});
@@ -77,7 +77,7 @@ describe('User API Endpoint Tests', () => {
       expect(response.body).to.have.property('error');    
     });
 
-    it('POST /api/v1/users Success create new user', async () => {
+    it('success create a new user with status code 201', async () => {
       const user = {
           name: 'Fari',
           email: 'fari@gmail.com',
@@ -95,8 +95,8 @@ describe('User API Endpoint Tests', () => {
     });
   });
 
-  context('Login User', () => {
-    it('POST /api/v1/users/login Invalid login credentials', async () => {
+  context('POST /api/v1/users/login | Login User', () => {
+    it('fail to login with status code 404 because login credentials are invalid', async () => {
       const user = {      
         email: 'fari@gmail.com',
         password: 'xxxxxx'
@@ -111,7 +111,7 @@ describe('User API Endpoint Tests', () => {
       expect(response.body.message).to.equal('Invalid login');    
     });
 
-    it('POST /api/v1/users/login Success login', async () => {
+    it('Success to login with status code 200', async () => {
       const user = {      
         email: 'fari@gmail.com',
         password: '123456'
@@ -132,8 +132,8 @@ describe('User API Endpoint Tests', () => {
     });
   });
 
-  context('GET My Profile', () => {
-    it('GET /api/v1/users/me Guest can not access profile, must login', async () => {
+  context('GET /api/v1/users/me | GET My Profile', () => {
+    it('fail to get my profile with status code 401 because not yet login', async () => {
       const response = await request(app)
         .get('/api/v1/users/me');
       
@@ -142,7 +142,7 @@ describe('User API Endpoint Tests', () => {
       expect(response.body.message).to.equal('Not authenticated');    
     });
     
-    it('GET /api/v1/users/me Success read my profile', async () => {
+    it('success to read my profile with status code 200', async () => {
       let user = await helpers.createUser();
       
       const response = await request(app)
@@ -156,19 +156,19 @@ describe('User API Endpoint Tests', () => {
     });
   });
     
-  context('UPDATE Profile User', () => {
-    it('PUT /api/v1/users/:idUser Update my profile', async () => {
+  context('PATCH /api/v1/users/:idUser| UPDATE Profile User', () => {
+    it('success to updated profile user with status code 200', async () => {
       let user = await helpers.createUser();    
       
-      const dataUserLatest = {
+      const newUserData = {
         name: "Test Update User",
         email: "testUpdateUser@gmail.com"
       }    
       
       const response = await request(app)
-        .put(`/api/v1/users/${user.user.id}`)
+        .patch(`/api/v1/users/${user.user.id}`)
         .set('Authorization', `Bearer ${user.token}`)
-        .send(dataUserLatest);
+        .send(newUserData);
       
       expect(response.statusCode).to.equal(200);
       expect(response.body).to.have.property('message')
@@ -177,8 +177,8 @@ describe('User API Endpoint Tests', () => {
     });
   });
 
-  context('DELETE User', () => {
-    it('DELETE /api/v1/users/:idUser Delete user itself', async () => {
+  context('DELETE /api/v1/users/:idUser | DELETE User', () => {
+    it('success deleted the user using his own token tih status code 200', async () => {
       let user = await helpers.createUser();
     
       const response = await request(app)
@@ -191,8 +191,8 @@ describe('User API Endpoint Tests', () => {
       expect(response.body).to.have.property('user'); 
     });
 
-    it('DELETE /api/v1/users/:idUser Delete another user', async () => {
-      // let user = await helpers.createUser();
+    it('success deleted another user with status code 200', async () => {
+      let user1 = await helpers.createUser();
   
       const user = {      
         email: 'fari@gmail.com',
@@ -205,7 +205,7 @@ describe('User API Endpoint Tests', () => {
     
       const response = await request(app)
         // .delete(`/api/v1/users/${user.user.id}`)
-        .delete(`/api/v1/users/${responseLogin.body.user.id}`)
+        .delete(`/api/v1/users/${user1.user.id}`)
         // .delete(`/api/v1/users/1`)
         .set('Authorization', `Bearer ${responseLogin.body.token}`);
       
